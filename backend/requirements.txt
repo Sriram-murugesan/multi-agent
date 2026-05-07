@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+python-multipart
+groq
+duckduckgo-search
+python-dotenv
+requests
