@@ -1,90 +1,108 @@
 # 🚀 Production AI Agent
 
-A sophisticated, full-stack AI agent application built with a FastAPI backend and a React/Vite frontend. This agent leverages the power of Groq's Llama-3.1 model to provide intelligent responses and perform real-world tasks through integrated tools.
+A full-stack AI assistant built with a FastAPI backend and a React/Vite frontend. The project is designed for clean GitHub publishing with environment-safe configuration, build-friendly scripts, and CI validation.
 
 ## ✨ Features
 
-- **🤖 Intelligent Conversation**: Powered by Groq's Llama-3.1-8b-instant model for fast and accurate responses.
-- **🛠️ Tool Integration**: The agent can autonomously decide to use tools to provide better answers:
-  - **🔍 Web Search**: Real-time information retrieval using DuckDuckGo.
-  - **🧮 Calculator**: Precise mathematical computations.
-  - **🌤️ Weather**: Current weather updates for any location.
-- **💬 Real-time Chat Interface**: A modern, responsive UI built with React and Tailwind CSS.
-- **🧠 Persistent Memory**: Maintains conversation context within a session.
-- **🎨 Premium Design**: Features a glassmorphic UI, smooth animations, and a sleek dark-themed aesthetic.
+- **AI chat experience** with Groq Llama-3.1
+- **Tool-aware responses** using calculator, web search, and weather lookup
+- **React + Tailwind UI** with a polished chat interface
+- **FastAPI backend** with safe tool execution and persistent session memory
+- **Clean repo structure** with `.gitignore`, `.env.example`, and GitHub Actions CI
 
-## 🛠️ Tech Stack
+## 🧩 Tech Stack
 
 ### Backend
-- **Framework**: [FastAPI](https://fastapi.tiangolo.com/)
-- **AI Model**: [Groq](https://groq.com/) (Llama-3.1-8b-instant)
-- **Search**: [DuckDuckGo Search](https://pypi.org/project/duckduckgo-search/)
-- **Environment Management**: `python-dotenv`
+- FastAPI
+- Groq Python SDK
+- DuckDuckGo search
+- python-dotenv
+- Requests
 
 ### Frontend
-- **Framework**: [React](https://reactjs.org/) (via Vite)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-- **HTTP Client**: [Axios](https://axios-http.com/)
-- **Icons**: [Lucide React](https://lucide.dev/)
+- React 18
+- Vite
+- Tailwind CSS
 
-## 🚀 Getting Started
+## 🚀 Quickstart
 
-### Prerequisites
-- Python 3.9+
-- Node.js 18+
-- Groq API Key (Get it from [Groq Cloud](https://console.groq.com/))
+### 1. Backend
 
-### Backend Setup
-1. Navigate to the `backend` directory:
-   ```bash
-   cd backend
-   ```
-2. Create a virtual environment and activate it:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. Create a `.env` file and add your Groq API Key:
-   ```env
-   GROQ_API_KEY=your_groq_api_key_here
-   ```
-5. Start the FastAPI server:
-   ```bash
-   uvicorn main:app --reload
-   ```
-
-### Frontend Setup
-1. Navigate to the root directory (where `package.json` is located):
-   ```bash
-   npm install
-   ```
-2. Start the development server:
-   ```bash
-   npm run dev
-   ```
-
-## 📂 Project Structure
-
-```text
-├── backend/
-│   ├── agent.py          # Core Agent logic & tool handling
-│   ├── main.py           # FastAPI endpoints
-│   ├── tools.py          # Tool implementations (Search, Calc, etc.)
-│   ├── tool_registry.py  # JSON definitions for tools
-│   ├── memory.py         # Conversation state management
-│   └── .env              # Environment variables
-├── frontend/
-│   └── src/
-│       ├── components/   # UI Components (ChatBox, InputBar, etc.)
-│       └── App.jsx       # Main application entry
-├── package.json          # Frontend dependencies & scripts
-└── tailwind.config.js    # Tailwind CSS configuration
+```bash
+cd backend
+python -m venv .venv
+# Windows
+.venv\Scripts\activate
+# macOS/Linux
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
 ```
 
-## 📝 License
+Edit `backend/.env` and set:
 
-This project is open-source and available under the [MIT License](LICENSE).
+```env
+GROQ_API_KEY=your_groq_api_key_here
+```
+
+Start the backend:
+
+```bash
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+### 2. Frontend
+
+From the repository root:
+
+```bash
+npm install
+npm run dev
+```
+
+Open the local Vite URL shown in the terminal.
+
+## 🛠️ Project Layout
+
+```text
+production-agent/
+├── backend/               # FastAPI backend and AI agent logic
+│   ├── agent.py
+│   ├── config.py
+│   ├── main.py
+│   ├── memory.py
+│   ├── requirements.txt
+│   ├── schemas.py
+│   ├── tool_registry.py
+│   ├── tools.py
+│   ├── .env.example
+│   └── .env              # ignored
+├── frontend/              # React/Vite frontend UI
+│   ├── index.css
+│   └── src/
+│       ├── App.jsx
+│       ├── main.jsx
+│       └── components/
+├── .github/               # GitHub Actions CI
+│   └── workflows/ci.yml
+├── .gitignore
+├── LICENSE
+├── package.json
+├── postcss.config.js
+├── tailwind.config.js
+├── vite.config.js
+└── README.md
+```
+
+## ✅ GitHub Ready
+
+- `.gitignore` excludes generated files, virtual environments, and secret env files
+- `backend/.env.example` provides a safe template
+- `LICENSE` is set to MIT
+- GitHub Actions validates frontend build and backend Python compilation
+
+## 🔧 Notes
+
+- Backend will load `backend/.env` directly, even when running from the repository root.
+- The frontend uses the browser `fetch` API to call `http://localhost:8000/chat`.
+- Keep secrets out of GitHub by never committing `.env`.

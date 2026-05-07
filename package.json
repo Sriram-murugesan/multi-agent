@@ -1,7 +1,10 @@
 {
-  "name": "production-agent-frontend",
+  "name": "production-agent",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
+  "description": "Full-stack AI assistant with FastAPI backend and React/Vite frontend.",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
