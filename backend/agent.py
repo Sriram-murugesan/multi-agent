@@ -41,6 +41,12 @@ class Agent:
             name = tool_call.function.name
             args = json.loads(tool_call.function.arguments)
 
+            # Guard against LLM hallucinating an unregistered tool name
+            if name not in tool_map:
+                answer = f"I tried to use an unknown tool '{name}'. Please try rephrasing."
+                self.memory.add("assistant", answer)
+                return {"answer": answer, "tool_used": None}
+
             # Execute the tool
             result = tool_map[name](**args)
 
@@ -75,10 +81,12 @@ class Agent:
                 messages=[self.system_prompt] + self.memory.get(),
             )
 
-            answer = final.choices[0].message.content
+            # Guard against None content from the model
+            answer = final.choices[0].message.content or "I couldn't generate a response."
             tool_used = name
         else:
-            answer = msg.content
+            # Guard against None content from the model
+            answer = msg.content or "I couldn't generate a response."
             tool_used = None
 
         self.memory.add("assistant", answer)

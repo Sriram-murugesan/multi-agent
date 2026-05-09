@@ -20,24 +20,28 @@ export default function App() {
         body: JSON.stringify({ message: text }),
       });
 
+      if (!res.ok) {
+        throw new Error(`Server error: ${res.status}`);
+      }
+
       const data = await res.json();
 
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
-          content: data.answer || data,
+          content: data.answer || "No response received.",
           tool: data.tool_used,
         },
       ]);
     } catch (err) {
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Error connecting to server" },
+        { role: "assistant", content: `Error: ${err.message || "Could not connect to server."}` },
       ]);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   const clearChat = async () => {

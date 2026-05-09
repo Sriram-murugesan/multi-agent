@@ -21,5 +21,16 @@ class Memory:
         self.history = []
 
     def _trim(self):
-        if len(self.history) > MAX_HISTORY:
-            self.history = self.history[-MAX_HISTORY:]
+        """Trim history to MAX_HISTORY, but never split tool-call/tool-result pairs."""
+        if len(self.history) <= MAX_HISTORY:
+            return
+        # Trim from the front, stopping only at a clean 'user' message boundary
+        self.history = self.history[-MAX_HISTORY:]
+        # If the first message is a tool or assistant-with-tool_calls, drop it
+        # to avoid orphaned tool messages that cause API errors
+        while self.history and self.history[0].get("role") in ("tool",) or (
+            self.history
+            and self.history[0].get("role") == "assistant"
+            and self.history[0].get("tool_calls")
+        ):
+            self.history.pop(0)

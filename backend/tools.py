@@ -12,15 +12,30 @@ operators = {
     ast.Pow: op.pow,
 }
 
+unary_operators = {
+    ast.UAdd: op.pos,
+    ast.USub: op.neg,
+}
+
 def safe_eval(expr):
     def eval_(node):
-        if isinstance(node, ast.Num):
+        if isinstance(node, ast.Constant):
+            if isinstance(node.value, (int, float)):
+                return node.value
+            raise TypeError("Unsupported constant")
+        elif isinstance(node, ast.Num):
             return node.n
+        elif isinstance(node, ast.UnaryOp) and type(node.op) in unary_operators:
+            return unary_operators[type(node.op)](eval_(node.operand))
         elif isinstance(node, ast.BinOp):
+            if type(node.op) not in operators:
+                raise TypeError("Unsupported binary operator")
             return operators[type(node.op)](eval_(node.left), eval_(node.right))
         else:
             raise TypeError("Unsupported expression")
-    return eval_(ast.parse(expr, mode='eval').body)
+
+    tree = ast.parse(expr, mode='eval')
+    return eval_(tree.body)
 
 def calculator(expression: str):
     try:
@@ -40,24 +55,9 @@ def search(query: str):
 
 def get_weather(city: str):
     try:
-        data = requests.get(f"https://wttr.in/{city}?format=j1").json()
+        data = requests.get(f"https://wttr.in/{city}?format=j1", timeout=8).json()
         current = data["current_condition"][0]
         return f"{city}: {current['temp_C']}°C, {current['weatherDesc'][0]['value']}"
-    except:
-        return "Weather fetch failed"
-
-
-def unit_converter(value, from_unit, to_unit):
-    conversions = {
-        ("km", "miles"): 0.621371,
-        ("miles", "km"): 1.60934,
-    }
-    key = (from_unit.lower(), to_unit.lower())
-    if key not in conversions:
-        return "Unsupported conversion"
-    return str(value * conversions[key])
-
-
-# ⚠️ DISABLED CODE EXECUTION (for safety)
-def code_executor(code: str):
-    return "Code execution disabled for security"
+    except Exception as e:
+        return f"Weather fetch failed: {e}"
+

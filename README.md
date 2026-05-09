@@ -1,48 +1,64 @@
-# 🚀 Production AI Agent
+# 🤖 Production AI Agent
 
-A full-stack AI assistant built with a FastAPI backend and a React/Vite frontend. The project is designed for clean GitHub publishing with environment-safe configuration, build-friendly scripts, and CI validation.
+A full-stack AI assistant with a **FastAPI** backend and a **React + Vite** frontend. The agent can answer questions, perform math, search the web, and look up weather — all powered by **Groq Llama-3.1**.
+
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Python](https://img.shields.io/badge/python-3.11-blue)
+![React](https://img.shields.io/badge/react-18-61DAFB)
+
+---
 
 ## ✨ Features
 
-- **AI chat experience** with Groq Llama-3.1
-- **Tool-aware responses** using calculator, web search, and weather lookup
-- **React + Tailwind UI** with a polished chat interface
-- **FastAPI backend** with safe tool execution and persistent session memory
-- **Clean repo structure** with `.gitignore`, `.env.example`, and GitHub Actions CI
+- 💬 **Conversational AI** with session memory (last 20 messages)
+- 🧮 **Calculator** — safe AST-based math evaluation (no `eval`)
+- 🔍 **Web search** — real-time results via DuckDuckGo
+- 🌤️ **Weather** — live conditions via wttr.in
+- ⚡ **Typing animation** and polished dark-mode chat UI
+- 🛡️ **Secure** — secrets stay in `.env`, never committed
+
+---
 
 ## 🧩 Tech Stack
 
-### Backend
-- FastAPI
-- Groq Python SDK
-- DuckDuckGo search
-- python-dotenv
-- Requests
+| Layer    | Technology                        |
+|----------|-----------------------------------|
+| Backend  | FastAPI, Groq SDK, python-dotenv  |
+| AI Model | Llama-3.1-8b-instant (via Groq)   |
+| Search   | DuckDuckGo Search                 |
+| Frontend | React 18, Vite, Tailwind CSS      |
+| CI       | GitHub Actions                    |
 
-### Frontend
-- React 18
-- Vite
-- Tailwind CSS
+---
 
 ## 🚀 Quickstart
 
-### 1. Backend
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/YOUR_USERNAME/production-agent.git
+cd production-agent
+```
+
+### 2. Backend setup
 
 ```bash
 cd backend
+
+# Create and activate a virtual environment
 python -m venv .venv
+
 # Windows
 .venv\Scripts\activate
-# macOS/Linux
+# macOS / Linux
 source .venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
+
+# Set up your API key
 cp .env.example .env
-```
-
-Edit `backend/.env` and set:
-
-```env
-GROQ_API_KEY=your_groq_api_key_here
+# Open .env and paste your Groq API key
 ```
 
 Start the backend:
@@ -51,58 +67,69 @@ Start the backend:
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### 2. Frontend
-
-From the repository root:
+### 3. Frontend setup
 
 ```bash
+cd frontend
 npm install
 npm run dev
 ```
 
-Open the local Vite URL shown in the terminal.
+Open the local Vite URL shown in the terminal (default: `http://localhost:5173`).
 
-## 🛠️ Project Layout
+---
 
-```text
+## 🗂️ Project Layout
+
+```
 production-agent/
-├── backend/               # FastAPI backend and AI agent logic
-│   ├── agent.py
-│   ├── config.py
-│   ├── main.py
-│   ├── memory.py
-│   ├── requirements.txt
-│   ├── schemas.py
-│   ├── tool_registry.py
-│   ├── tools.py
-│   ├── .env.example
-│   └── .env              # ignored
-├── frontend/              # React/Vite frontend UI
-│   ├── index.css
+├── backend/                  # FastAPI backend & AI agent logic
+│   ├── main.py               # FastAPI app & endpoints
+│   ├── agent.py              # Agent loop with tool-calling
+│   ├── memory.py             # Conversation history manager
+│   ├── tools.py              # calculator, search, get_weather
+│   ├── tool_registry.py      # Tool schema definitions for Groq
+│   ├── schemas.py            # Pydantic request schemas
+│   ├── config.py             # Env loading & validation
+│   ├── requirements.txt      # Python dependencies
+│   └── .env.example          # Safe API key template
+│
+├── frontend/                 # React/Vite frontend
+│   ├── index.html
+│   ├── index.css             # Tailwind directives
+│   ├── vite.config.js
+│   ├── tailwind.config.js
+│   ├── postcss.config.js
+│   ├── package.json
 │   └── src/
-│       ├── App.jsx
 │       ├── main.jsx
+│       ├── App.jsx           # State, fetch, layout
 │       └── components/
-├── .github/               # GitHub Actions CI
-│   └── workflows/ci.yml
+│           ├── Navbar.jsx
+│           ├── ChatBox.jsx
+│           ├── InputBar.jsx
+│           └── MessageBubble.jsx
+│
+├── .github/
+│   └── workflows/ci.yml      # GitHub Actions CI
 ├── .gitignore
 ├── LICENSE
-├── package.json
-├── postcss.config.js
-├── tailwind.config.js
-├── vite.config.js
 └── README.md
 ```
 
+---
+
 ## ✅ GitHub Ready
 
-- `.gitignore` excludes generated files, virtual environments, and secret env files
-- `backend/.env.example` provides a safe template
-- `LICENSE` is set to MIT
-- GitHub Actions validates frontend build and backend Python compilation
+- `.gitignore` excludes `__pycache__`, `node_modules`, `dist`, `.env`, and OS/IDE files
+- `backend/.env.example` provides a safe template — your real key is never committed
+- `LICENSE` — MIT
+- GitHub Actions CI validates both the frontend build and backend Python syntax on every push
+
+---
 
 ## 🔧 Notes
 
-- Backend will load `backend/.env` directly, even when running from the repository root.
-- The frontend uses the browser `fetch` API to call `http://localhost:8000/chat`.
-- Keep secrets out of GitHub by never committing `.env`.
+- The backend reads `backend/.env` automatically via `python-dotenv`, regardless of where you launch `uvicorn` from.
+- The frontend calls `http://localhost:8000/chat` — make sure the backend is running before opening the UI.
+- To get a free Groq API key, visit [console.groq.com](https://console.groq.com).
